@@ -72,6 +72,7 @@ public class GroupsController : ControllerBase {
     {
         try
         {
+
             var validUsers = await _groupService.ValidateUserAsync(groupRequest.Users, cancellationToken);
             if (!validUsers)
             {
@@ -128,6 +129,7 @@ public class GroupsController : ControllerBase {
 
         catch (InvalidGroupRequestFormatException)
         {
+
             return BadRequest(NewValidationProblemDetails("One or more validation errors ocurred.",
             HttpStatusCode.BadRequest, new Dictionary<string, string[]>{
                 {"Groups", ["Users array is empty"]}
@@ -148,6 +150,7 @@ public class GroupsController : ControllerBase {
             }));
         }
     }
+
 
 
     private static ValidationProblemDetails NewValidationProblemDetails(string title, HttpStatusCode statusCode, Dictionary<string, string[]> errors)

@@ -126,5 +126,11 @@ public class GroupService : IGroupService {
     public async Task<bool> ValidateUserAsync(Guid[] users, CancellationToken cancellationToken){
         var validUsers = await Task.WhenAll(users.Select(async x => await _userRepository.GetByIdAsync(x,cancellationToken) != null));
         return validUsers.All(s => s == true);
+
     }
+
+    
+
+
+    
 }
