@@ -1,5 +1,6 @@
 using RespApi.Models;
 using RestApi.Dtos;
+using RestApi.Exceptions;
 using RestApi.Infrasctructure.Mongo;
 using RestApi.Models;
 
@@ -24,7 +25,7 @@ public static class GroupMapper{
     }
     public static GroupModel ToModel (this GroupEntity group){
         if (group is null){
-            return null;
+            throw new GroupNotFoundException();
         }
 
         return new GroupModel{

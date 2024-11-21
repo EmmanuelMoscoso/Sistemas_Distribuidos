@@ -1,7 +1,8 @@
-
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using RespApi.Exeptions;
+using RestApi.Exceptions;
 using RestApi.Models;
-
 using RestApi.Repositories;
 
 namespace RestApi.Services;
@@ -16,11 +17,66 @@ public class GroupService : IGroupService {
         _groupRepository = groupRepository;
         _userRepository = userRepository;
     }
+
+    public async Task DeleteGroupByIdAsync(string id, CancellationToken cancellationToken)
+    {
+        var group = await _groupRepository.GetByIdAsync(id, cancellationToken);
+        if (group is null) {
+            throw new GroupNotFoundException();
+        }
+
+        await _groupRepository.DeleteByIdAsync(id, cancellationToken);
+    }
+
+    public async Task<GroupUserModel> CreateGroupAsync (string name, Guid[] users, CancellationToken cancellationToken)
+    {
+        if(users.Length == 0) {
+            throw new InvalidGroupRequestFormatException();
+        }
+
+        var groups = await _groupRepository.GetGroupsByNameAsync(name, 1, 1, "Name", cancellationToken);
+        if (groups.Any()) {
+            throw new GroupAlreadyExistsException();
+        }
+        var group = await _groupRepository.CreateAsync(name, users, cancellationToken);
+
+        return new GroupUserModel{
+            Id = group.Id,
+            Name = group.Name,
+            CreationDate = group.CreationDate,
+            Users = (await Task.WhenAll(
+                group.Users.Select(userId => _userRepository.GetByIdAsync(
+                    userId, cancellationToken)))).Where(user => user != null)
+                    .ToList()
+        };
+    }
+
     public async Task<GroupUserModel> GetGroupByIdAsync (string id, CancellationToken cancellationToken){
 
         var group = await _groupRepository.GetByIdAsync(id, cancellationToken);
         if (group is null){
-            return null;
+            throw new GroupNotFoundException();
+        }
+
+        return new GroupUserModel{
+            Id = group.Id,
+            Name = group.Name,
+            CreationDate = group.CreationDate,
+            Users = (await Task.WhenAll(
+                group.Users.Select(userId => _userRepository.GetByIdAsync(
+                    userId, cancellationToken)))).Where(user => user != null)
+                    .ToList()
+        };
+    }
+
+    public async Task<GroupUserModel> GetGroupByExactNameAsync(string name, CancellationToken cancellationToken)
+    {
+
+        var group = await _groupRepository.GetByExactNameAsync(name, cancellationToken);
+
+        if (group is null)
+        {
+            throw new GroupNotFoundException();
         }
 
         return new GroupUserModel{
@@ -46,6 +102,10 @@ public class GroupService : IGroupService {
         }));
 
         return groupUserModels.ToList();
-
     }
+
+    
+
+
+    
 }
