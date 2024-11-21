@@ -104,6 +104,31 @@ public class GroupService : IGroupService {
         return groupUserModels.ToList();
     }
 
+    public async Task UpdateGroupAsync(string id, string name, Guid[] users, CancellationToken cancellationToken)
+    {
+        if(users.Length == 0) {
+            throw new InvalidGroupRequestFormatException();
+        }
+
+        var group = await _groupRepository.GetByIdAsync(id, cancellationToken);
+        if (group is null){
+            throw new GroupNotFoundException();
+        }
+
+        var groups = await _groupRepository.GetByExactNameAsync(name, cancellationToken);
+        if (groups is not null && groups.Id != id){
+            throw new GroupAlreadyExistsException();
+        }
+
+        await _groupRepository.UpdateGroupAsync(id, name, users, cancellationToken);
+    }
+
+    public async Task<bool> ValidateUserAsync(Guid[] users, CancellationToken cancellationToken){
+        var validUsers = await Task.WhenAll(users.Select(async x => await _userRepository.GetByIdAsync(x,cancellationToken) != null));
+        return validUsers.All(s => s == true);
+
+    }
+
     
 
 

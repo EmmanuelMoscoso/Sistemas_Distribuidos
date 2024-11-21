@@ -10,7 +10,12 @@ public interface IGroupService{
 
     Task <GroupUserModel> CreateGroupAsync (string name, Guid [] Users, CancellationToken cancellationToken);
 
-    Task <GroupUserModel> GetGroupByExactNameAsync(string name, CancellationToken cancellationToken);
+    Task <GroupUserModel> GetGroupByExactNameAsync(string name, CancellationToken cancellationTgitoken);
+
+    Task UpdateGroupAsync(string id, string name, Guid[] users,CancellationToken cancellationToken);
+
+    Task<bool> ValidateUserAsync(Guid[] users, CancellationToken cancellationToken);
+
 
 
 }
