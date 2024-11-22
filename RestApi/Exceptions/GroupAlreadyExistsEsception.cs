@@ -1,4 +1,6 @@
-namespace RespApi.Exeptions;
+
+namespace RestApi.Exceptions;
+
 
 public class GroupAlreadyExistsException : Exception 
 {
