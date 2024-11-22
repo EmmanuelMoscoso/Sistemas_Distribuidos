@@ -7,6 +7,7 @@ using RestApi.Exceptions;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace RestApi.Controller;
 
 [ApiController]
@@ -73,6 +74,7 @@ public class GroupsController : ControllerBase {
     {
         try
         {
+
             var validUsers = await _groupService.ValidateUserAsync(groupRequest.Users, cancellationToken);
             if (!validUsers)
             {
@@ -129,6 +131,7 @@ public class GroupsController : ControllerBase {
 
         catch (InvalidGroupRequestFormatException)
         {
+
             return BadRequest(NewValidationProblemDetails("One or more validation errors ocurred.",
             HttpStatusCode.BadRequest, new Dictionary<string, string[]>{
                 {"Groups", ["Users array is empty"]}
