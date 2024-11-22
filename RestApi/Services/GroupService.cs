@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration.UserSecrets;
-using RespApi.Exeptions;
 using RestApi.Exceptions;
 using RestApi.Models;
 using RestApi.Repositories;

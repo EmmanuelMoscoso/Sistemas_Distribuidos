@@ -1,4 +1,4 @@
-namespace RespApi.Exeptions;
+namespace RestApi.Exceptions;
 
 public class UserValidationException : Exception
 {
