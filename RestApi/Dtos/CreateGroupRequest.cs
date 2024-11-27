@@ -1,4 +1,6 @@
+
 namespace RestApi.Dtos;
+
 
 public class CreateGroupRequest
 {

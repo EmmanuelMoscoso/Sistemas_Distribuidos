@@ -35,6 +35,7 @@ public class GroupsController : ControllerBase {
 
     [HttpGet("SearchByExactName")]
     [Authorize(Policy = "Read")]
+
     public async Task<ActionResult> GetGroupByExactNameAsync(string name, CancellationToken cancellationToken)
     {
         var group = await _groupService.GetGroupByExactNameAsync(name, cancellationToken);
@@ -50,7 +51,9 @@ public class GroupsController : ControllerBase {
     
 
     [HttpGet]
+
     [Authorize(Policy = "Read")]
+
     public async Task<ActionResult<IList<GroupResponse>>> GetGroupsByName([FromQuery] string name, [FromQuery] int pageNumber, [FromQuery] int pageSize, [FromQuery] string orderBy, CancellationToken cancellationToken)
     {
         var groups = await _groupService.GetGroupsByNameAsync(name, pageNumber, pageSize, orderBy, cancellationToken);
@@ -60,6 +63,7 @@ public class GroupsController : ControllerBase {
 
     [HttpDelete("{id}")]
     [Authorize(Policy = "Write")]
+
     public async Task<IActionResult> DeleteGroup(String id, CancellationToken cancellationToken)
     {
         try
@@ -74,10 +78,12 @@ public class GroupsController : ControllerBase {
 
     [HttpPost]
     [Authorize(Policy = "Write")]
+
     public async Task<ActionResult<GroupResponse>> CreateGroup([FromBody] CreateGroupRequest groupRequest, CancellationToken cancellationToken)
     {
         try
         {
+
             var validUsers = await _groupService.ValidateUserAsync(groupRequest.Users, cancellationToken);
             if (!validUsers)
             {
@@ -115,6 +121,7 @@ public class GroupsController : ControllerBase {
     //PU localhost:8080/groups/dnauifheqiu78
     [HttpPut("{id}")]
     [Authorize(Policy = "Write")]
+
     public async Task <ActionResult> UpdateGroup(string id, [FromBody] UpdateGroupRequest groupRequest, CancellationToken cancellationToken){
         try {
 
@@ -135,6 +142,7 @@ public class GroupsController : ControllerBase {
 
         catch (InvalidGroupRequestFormatException)
         {
+
             return BadRequest(NewValidationProblemDetails("One or more validation errors ocurred.",
             HttpStatusCode.BadRequest, new Dictionary<string, string[]>{
                 {"Groups", ["Users array is empty"]}
@@ -155,7 +163,6 @@ public class GroupsController : ControllerBase {
             }));
         }
     }
-
 
     private static ValidationProblemDetails NewValidationProblemDetails(string title, HttpStatusCode statusCode, Dictionary<string, string[]> errors)
     {

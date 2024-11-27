@@ -18,6 +18,7 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
         options.Authority = builder.Configuration.GetValue<string>("Authentication:Authority");
@@ -38,6 +39,7 @@ builder.Services.AddAuthorization(options => {
     options.AddPolicy("Write", policy => policy.RequireClaim("http://schemas.microsoft.com/identity/claims/scope", "write"));
 
 });
+
 
 var app = builder.Build();
 
