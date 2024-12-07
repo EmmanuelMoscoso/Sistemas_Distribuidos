@@ -7,7 +7,6 @@ using RestApi.Exceptions;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace RestApi.Controller;
 
 [ApiController]
@@ -23,6 +22,7 @@ public class GroupsController : ControllerBase {
     }
     //localhosts:port/groups/192282892929
     [HttpGet("{id}")]
+    [Authorize(Policy = "Read")]
     public async Task <ActionResult<GroupResponse>> GetGroupById(string id, CancellationToken cancellationToken){
         var group = await _groupService.GetGroupByIdAsync(id, cancellationToken);
 
@@ -34,6 +34,8 @@ public class GroupsController : ControllerBase {
     }
 
     [HttpGet("SearchByExactName")]
+    [Authorize(Policy = "Read")]
+
     public async Task<ActionResult> GetGroupByExactNameAsync(string name, CancellationToken cancellationToken)
     {
         var group = await _groupService.GetGroupByExactNameAsync(name, cancellationToken);
@@ -49,6 +51,9 @@ public class GroupsController : ControllerBase {
     
 
     [HttpGet]
+
+    [Authorize(Policy = "Read")]
+
     public async Task<ActionResult<IList<GroupResponse>>> GetGroupsByName([FromQuery] string name, [FromQuery] int pageNumber, [FromQuery] int pageSize, [FromQuery] string orderBy, CancellationToken cancellationToken)
     {
         var groups = await _groupService.GetGroupsByNameAsync(name, pageNumber, pageSize, orderBy, cancellationToken);
@@ -56,7 +61,9 @@ public class GroupsController : ControllerBase {
         return Ok(groups.Select(group => group.ToDto()).ToList());
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
+    [Authorize(Policy = "Write")]
+
     public async Task<IActionResult> DeleteGroup(String id, CancellationToken cancellationToken)
     {
         try
@@ -70,6 +77,8 @@ public class GroupsController : ControllerBase {
     }
 
     [HttpPost]
+    [Authorize(Policy = "Write")]
+
     public async Task<ActionResult<GroupResponse>> CreateGroup([FromBody] CreateGroupRequest groupRequest, CancellationToken cancellationToken)
     {
         try
@@ -111,6 +120,8 @@ public class GroupsController : ControllerBase {
 
     //PU localhost:8080/groups/dnauifheqiu78
     [HttpPut("{id}")]
+    [Authorize(Policy = "Write")]
+
     public async Task <ActionResult> UpdateGroup(string id, [FromBody] UpdateGroupRequest groupRequest, CancellationToken cancellationToken){
         try {
 
@@ -152,7 +163,6 @@ public class GroupsController : ControllerBase {
             }));
         }
     }
-
 
     private static ValidationProblemDetails NewValidationProblemDetails(string title, HttpStatusCode statusCode, Dictionary<string, string[]> errors)
     {
